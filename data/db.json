@@ -1,0 +1,222 @@
+{
+  "admin": {
+    "username": "artistayan123@gmail.com",
+    "password": "@Artistayan321"
+  },
+  "settings": {
+    "aboutText": "I am Ayan Nayak (A.ynx_), a multidisciplinary creator with over three years of experience delivering premium digital solutions worldwide. From cinematic editing and motion graphics to website, application, and game development, my mission is to build memorable digital experiences with creativity, professionalism, and reliability. Having successfully served more than 250 clients across India, Pakistan, and the USA, I continue to push boundaries and learn new technologies every day.",
+    "experience": "3+ Years",
+    "clientsCount": "250+",
+    "countriesCount": "3+",
+    "contactPhone": "+91 8477824872",
+    "contactTelegram": "https://t.me/Aynxxzzz",
+    "contactWhatsApp": "https://wa.me/918477824872"
+  },
+  "projects": [
+    {
+      "id": "1",
+      "title": "Nexus Luxury Web Portal",
+      "category": "Website Development",
+      "description": "A high-speed, holographic-inspired web portal designed for an elite digital couture house, featuring custom hover grids, fluid layout animations, and premium cursor physics.",
+      "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop",
+      "tags": [
+        "React",
+        "Tailwind CSS",
+        "Motion",
+        "Aesthetic Typography"
+      ],
+      "client": "Couture Digital Ltd.",
+      "date": "May 2026",
+      "link": "https://nexus-luxury.example.com",
+      "budget": "$5,000+"
+    },
+    {
+      "id": "2",
+      "title": "Aura Decentralized App",
+      "category": "App Development",
+      "description": "A secure, gesture-driven cryptocurrency wallet and NFT portfolio manager, designed with rich glassmorphism layouts, fluid tactile buttons, and interactive card transitions.",
+      "image": "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?q=80&w=800&auto=format&fit=crop",
+      "tags": [
+        "React Native",
+        "TypeScript",
+        "Tailwind",
+        "Haptic Engines"
+      ],
+      "client": "Aura Labs Inc.",
+      "date": "Jan 2026",
+      "link": "https://aura-crypto.example.com",
+      "budget": "$7,500+"
+    },
+    {
+      "id": "3",
+      "title": "Neon Chase 3D Runner",
+      "category": "Game Development",
+      "description": "An immersive retro-futuristic arcade runner featuring procedural terrain, procedural synthetic ambient scores, volumetric neon lighting, and high-performance physics.",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop",
+      "tags": [
+        "Three.js",
+        "WebGL",
+        "TypeScript",
+        "Audio Synth"
+      ],
+      "client": "Vapor Gaming Group",
+      "date": "March 2026",
+      "link": "https://neon-chase.example.com",
+      "budget": "$12,000"
+    },
+    {
+      "id": "4",
+      "title": "Cinematic Motion Opener",
+      "category": "Video Editing",
+      "description": "A premium 4K production opener for luxury auto-brands, crafting multi-layered 3D space effects, high-fidelity soundscapes, and professional-grade color grading.",
+      "image": "https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop",
+      "tags": [
+        "After Effects",
+        "Premiere Pro",
+        "DaVinci",
+        "Sound Design"
+      ],
+      "client": "Vitesse Automotive",
+      "date": "April 2026",
+      "link": "https://vimeo.com/example",
+      "budget": "$3,500"
+    },
+    {
+      "id": "5",
+      "title": "Morphing Fluid Graphics",
+      "category": "Motion Graphics",
+      "description": "A series of kinetic typographic posters and digital animations that play with fluid dynamics, shape morphing, and golden metallic lighting overlays.",
+      "image": "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?q=80&w=800&auto=format&fit=crop",
+      "tags": [
+        "After Effects",
+        "Framer Motion",
+        "WebGL Canvas"
+      ],
+      "client": "Sonder Studio",
+      "date": "Feb 2026",
+      "link": "https://sonder.example.com",
+      "budget": "$4,200"
+    },
+    {
+      "id": "6",
+      "title": "Gold-Inlaid YouTube Thumbnail Set",
+      "category": "Thumbnail Design",
+      "description": "A series of high-conversion digital cover illustrations utilizing volumetric lighting, meticulously placed drop-shadows, and gold-foil digital elements.",
+      "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=800&auto=format&fit=crop",
+      "tags": [
+        "Photoshop",
+        "Lightroom",
+        "Volumetric Glows"
+      ],
+      "client": "Nayak Tech Show",
+      "date": "June 2026",
+      "link": "#",
+      "budget": "$1,800"
+    },
+    {
+      "id": "7",
+      "title": "Omni Flow Enterprise Dashboard",
+      "category": "Business Solutions",
+      "description": "A gorgeous executive corporate visualization system that helps large agencies export logs, track real-time visitors, and monitor cross-platform analytics with 3D charts.",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop",
+      "tags": [
+        "React Charts",
+        "Express Backend",
+        "CSV Export"
+      ],
+      "client": "Apex Enterprise Group",
+      "date": "June 2026",
+      "link": "https://omni-flow.example.com",
+      "budget": "$9,000"
+    }
+  ],
+  "reviews": [
+    {
+      "id": "1",
+      "name": "James Carter",
+      "text": "Exceptional work and incredible quality. Fast, reliable and highly professional.",
+      "rating": 5,
+      "country": "USA 🇺🇸",
+      "approved": true,
+      "featured": true,
+      "date": "2026-06-15T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Ali Raza",
+      "text": "Professional, creative and always available. Highly recommended.",
+      "rating": 5,
+      "country": "Pakistan 🇵🇰",
+      "approved": true,
+      "featured": true,
+      "date": "2026-06-18T14:30:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Rohit Sharma",
+      "text": "One of the best editors and developers I have ever worked with.",
+      "rating": 5,
+      "country": "India 🇮🇳",
+      "approved": true,
+      "featured": true,
+      "date": "2026-06-25T08:15:00Z"
+    }
+  ],
+  "messages": [],
+  "analytics": {
+    "totalViews": 331,
+    "viewsByCountry": {
+      "India 🇮🇳": 155,
+      "USA 🇺🇸": 113,
+      "Pakistan 🇵🇰": 46,
+      "Other 🌐": 17
+    },
+    "viewsByService": {
+      "Website Development": 94,
+      "App Development": 71,
+      "Game Development": 42,
+      "Video Editing": 85,
+      "Motion Graphics": 53,
+      "Thumbnail Design": 38,
+      "Business Solutions": 45
+    },
+    "recentVisits": [
+      {
+        "id": "v1783139224461kqbi",
+        "path": "/@vite/client",
+        "country": "USA 🇺🇸",
+        "time": "2026-07-04T04:27:04.461Z"
+      },
+      {
+        "id": "v1783139224125krzr",
+        "path": "/",
+        "country": "Pakistan 🇵🇰",
+        "time": "2026-07-04T04:27:04.125Z"
+      },
+      {
+        "id": "v178313920430811kq",
+        "path": "/",
+        "country": "India 🇮🇳",
+        "time": "2026-07-04T04:26:44.308Z"
+      },
+      {
+        "id": "v1",
+        "path": "/",
+        "country": "India 🇮🇳",
+        "time": "2026-07-03T21:00:00Z"
+      },
+      {
+        "id": "v2",
+        "path": "/services",
+        "country": "USA 🇺🇸",
+        "time": "2026-07-03T21:05:00Z"
+      },
+      {
+        "id": "v3",
+        "path": "/portfolio",
+        "country": "Pakistan 🇵🇰",
+        "time": "2026-07-03T21:10:00Z"
+      }
+    ]
+  }
+}

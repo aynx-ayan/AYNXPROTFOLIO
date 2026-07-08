@@ -1,0 +1,118 @@
+{
+  "entities": {
+    "AdminCredentials": {
+      "title": "AdminCredentials",
+      "description": "Administrative login credentials for the portfolio dashboard",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string", "description": "Admin username or email" },
+        "password": { "type": "string", "description": "SHA-256 hashed password" }
+      },
+      "required": ["username", "password"]
+    },
+    "AdminSettings": {
+      "title": "AdminSettings",
+      "description": "Global custom configurations and contact options for the portfolio",
+      "type": "object",
+      "properties": {
+        "aboutText": { "type": "string", "description": "The description about the creator" },
+        "experience": { "type": "string", "description": "Years of experience" },
+        "clientsCount": { "type": "string", "description": "Number of successfully served clients" },
+        "countriesCount": { "type": "string", "description": "Number of countries served" },
+        "contactPhone": { "type": "string", "description": "Direct phone number contact" },
+        "contactTelegram": { "type": "string", "description": "Telegram user handle link" },
+        "contactWhatsApp": { "type": "string", "description": "WhatsApp direct chat link" }
+      },
+      "required": ["aboutText", "experience", "clientsCount", "countriesCount", "contactPhone", "contactTelegram", "contactWhatsApp"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "A portfolio project item showcasing creator's capability",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique project identifier" },
+        "title": { "type": "string", "description": "Title of the project" },
+        "category": { "type": "string", "description": "Discipline category of the work" },
+        "description": { "type": "string", "description": "Detailed description of requirements and results" },
+        "image": { "type": "string", "description": "Unsplash or cover image URL" },
+        "tags": { "type": "array", "description": "Technical tag list" },
+        "client": { "type": "string", "description": "Name of client or agency" },
+        "date": { "type": "string", "description": "Month and year of project" },
+        "link": { "type": "string", "description": "Live preview or case study URL" },
+        "budget": { "type": "string", "description": "Cost or pricing of this work" }
+      },
+      "required": ["id", "title", "category", "description", "image", "tags", "client", "date", "link", "budget"]
+    },
+    "Review": {
+      "title": "Review",
+      "description": "Client feedback rating and textual testimonial",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique testimonial identifier" },
+        "name": { "type": "string", "description": "Client name" },
+        "text": { "type": "string", "description": "Testimonial comment text" },
+        "rating": { "type": "number", "description": "Review score from 1 to 5" },
+        "country": { "type": "string", "description": "Client origin country with emoji" },
+        "approved": { "type": "boolean", "description": "Approved by admin for public page listing" },
+        "featured": { "type": "boolean", "description": "Featured in high-visibility slots" },
+        "date": { "type": "string", "description": "ISO string timestamp" }
+      },
+      "required": ["id", "name", "text", "rating", "country", "approved", "featured", "date"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A contact inquiry dispatch from potential lead client",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique message identifier" },
+        "name": { "type": "string", "description": "Full name of contact" },
+        "email": { "type": "string", "description": "Contact email address" },
+        "message": { "type": "string", "description": "The main request pitch details" },
+        "date": { "type": "string", "description": "ISO string timestamp" },
+        "status": { "type": "string", "description": "Unread or read state" },
+        "service": { "type": "string", "description": "Selected service of inquiry" },
+        "budget": { "type": "string", "description": "Selected approximate budget tier" },
+        "country": { "type": "string", "description": "Identified origin country" }
+      },
+      "required": ["id", "name", "email", "message", "date", "status"]
+    },
+    "Analytics": {
+      "title": "Analytics",
+      "description": "Live statistical metrics of the digital portfolio",
+      "type": "object",
+      "properties": {
+        "totalViews": { "type": "number", "description": "Cumulative total landing page views" },
+        "viewsByCountry": { "type": "object", "description": "Map tracking visits by origin countries" },
+        "viewsByService": { "type": "object", "description": "Map tracking requested disciplines" },
+        "recentVisits": { "type": "array", "description": "List of recent visitor session snapshots" }
+      },
+      "required": ["totalViews", "viewsByCountry", "viewsByService", "recentVisits"]
+    }
+  },
+  "firestore": {
+    "projects/{projectId}": {
+      "schema": "Project",
+      "description": "The dynamic projects catalog showcased on the portfolio"
+    },
+    "reviews/{reviewId}": {
+      "schema": "Review",
+      "description": "The client testimonials and user reviews"
+    },
+    "messages/{messageId}": {
+      "schema": "Message",
+      "description": "Contact inquiries and sales leads submitted by users"
+    },
+    "site_config/admin": {
+      "schema": "AdminCredentials",
+      "description": "Admin login username and password hash"
+    },
+    "site_config/settings": {
+      "schema": "AdminSettings",
+      "description": "Administrative configurations and contact detail records"
+    },
+    "site_config/analytics": {
+      "schema": "Analytics",
+      "description": "Statistical visitor metrics"
+    }
+  }
+}

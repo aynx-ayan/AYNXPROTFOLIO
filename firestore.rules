@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny rule
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions for validation
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // PROJECTS COLLECTION RULES
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // REVIEWS COLLECTION RULES
+    match /reviews/{reviewId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // MESSAGES COLLECTION RULES
+    match /messages/{messageId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // SITE CONFIG RULES (admin, settings, analytics)
+    match /site_config/{configId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}

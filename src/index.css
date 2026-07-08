@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-gold-50: #fefdf0;
+  --color-gold-100: #fdfae1;
+  --color-gold-200: #faf1b6;
+  --color-gold-300: #f5df7e;
+  --color-gold-400: #eec547;
+  --color-gold-500: #d4a317;
+  --color-gold-600: #b47f10;
+  --color-gold-700: #8f5c0e;
+  --color-gold-800: #744911;
+  --color-gold-900: #623d13;
+  --color-gold-950: #391f06;
+}
+
+/* Luxury Custom Styles */
+body {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Custom Gold Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #000000;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d4a317 0%, #391f06 100%);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #eec547;
+}
+
+/* Metallic Reflective Grid Overlay */
+.grid-overlay {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(212, 163, 23, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 163, 23, 0.04) 1px, transparent 1px);
+}
+
+/* Glassmorphism Panels */
+.glass-premium {
+  background: rgba(13, 13, 13, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 163, 23, 0.1);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7);
+}
+
+.glass-premium-hover {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-premium-hover:hover {
+  border-color: rgba(212, 163, 23, 0.3);
+  box-shadow: 0 0 30px rgba(212, 163, 23, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Golden Reflected Lights & Ambient Glows */
+.gold-glow {
+  box-shadow: 0 0 40px rgba(212, 163, 23, 0.15);
+}
+
+.crimson-glow {
+  box-shadow: 0 0 40px rgba(220, 38, 38, 0.15);
+}
+
+.metallic-gold-text {
+  background: linear-gradient(135deg, #fefdf0 0%, #d4a317 50%, #744911 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Magnetic Button Animation Core */
+.magnetic-btn {
+  transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Marquee Infinite Loop */
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: 200%;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Metallic Shine Hover Effect */
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+.shine-effect::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -60%;
+  width: 30%;
+  height: 200%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.13) 77%,
+    rgba(255, 255, 255, 0.5) 92%,
+    rgba(255, 255, 255, 0.0) 100%
+  );
+  transform: rotate(30deg);
+  transition: all 0.8s ease;
+  pointer-events: none;
+}
+.shine-effect:hover::after {
+  left: 130%;
+}
