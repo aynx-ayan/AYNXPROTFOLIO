@@ -44,6 +44,7 @@ export interface AdminSettings {
   contactPhone: string;
   contactTelegram: string;
   contactWhatsApp: string;
+  profileImage?: string;
 }
 
 export interface AnalyticsData {

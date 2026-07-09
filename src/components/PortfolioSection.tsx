@@ -131,7 +131,7 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 md:p-8 select-none"
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 md:p-8 select-none"
             >
               {/* Custom micro grids overlay */}
               <div className="absolute inset-0 grid-overlay opacity-30 pointer-events-none" />
@@ -141,11 +141,11 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.9, y: 50, opacity: 0 }}
                 transition={{ type: "spring", damping: 25, stiffness: 120 }}
-                className="w-full max-w-5xl bg-neutral-950 border border-white/10 rounded-3xl overflow-hidden relative z-10 flex flex-col lg:flex-row max-h-[90vh]"
+                className="w-full max-w-5xl bg-neutral-950 border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden relative z-10 flex flex-col lg:flex-row max-h-[92vh] lg:max-h-[85vh]"
               >
                 
                 {/* Left Side: Dynamic Cinematic Frame */}
-                <div className="lg:w-1/2 relative bg-black min-h-[250px] lg:min-h-[500px]">
+                <div className="w-full lg:w-1/2 relative bg-black aspect-video sm:aspect-[21/9] lg:aspect-auto lg:h-auto lg:min-h-[500px] flex-shrink-0">
                   <img 
                     src={activeProject.image} 
                     alt={activeProject.title} 
@@ -156,13 +156,13 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
                   <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/80 via-transparent to-transparent pointer-events-none" />
                   
                   {/* Highlight spark */}
-                  <div className="absolute top-6 left-6 bg-gold-600 text-black text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(212,163,23,0.5)]">
+                  <div className="absolute top-4 left-4 bg-gold-600 text-black text-[9px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-[0_0_15px_rgba(212,163,23,0.5)]">
                     {activeProject.category}
                   </div>
                 </div>
 
                 {/* Right Side: Detailed spec specs */}
-                <div className="lg:w-1/2 p-8 md:p-12 overflow-y-auto flex flex-col justify-between">
+                <div className="w-full lg:w-1/2 p-5 sm:p-8 md:p-12 overflow-y-auto flex flex-col justify-between flex-grow min-h-0">
                   {/* Close button */}
                   <button 
                     onClick={() => setActiveProject(null)}

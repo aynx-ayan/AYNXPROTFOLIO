@@ -15,6 +15,8 @@ export default function HomeSection({ onNavigate, settings }: HomeSectionProps) 
   const [hoveredService, setHoveredService] = useState<number | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   
+  const displayImage = settings.profileImage || ayanProfile;
+
   // Parallax Tilt State for the circular profile frame
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const frameRef = useRef<HTMLDivElement>(null);
@@ -206,7 +208,7 @@ export default function HomeSection({ onNavigate, settings }: HomeSectionProps) 
             {/* Profile circular crop */}
             <div className="w-full h-full rounded-full overflow-hidden border border-white/5 relative z-10 shadow-[inset_0_0_40px_rgba(0,0,0,0.8)]">
               <motion.img 
-                src={ayanProfile} 
+                src={displayImage} 
                 alt="Ayan Nayak (A.ynx_)" 
                 initial={{ scale: 1.25, filter: 'brightness(0.3) blur(10px)', opacity: 0 }}
                 animate={{ scale: 1, filter: 'brightness(1) blur(0px)', opacity: 1 }}

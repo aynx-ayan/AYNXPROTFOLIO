@@ -68,7 +68,7 @@ export default function AdminSection({
     }
   };
 
-  const uploadFile = async (file: File) => {
+  const uploadFile = async (file: File, isProfile: boolean = false) => {
     if (!file.type.startsWith('image/')) {
       setUploadError('Please select an image file (PNG, JPG, WEBP, GIF etc.)');
       return;
@@ -98,7 +98,11 @@ export default function AdminSection({
 
         const data = await response.json();
         if (data.success) {
-          setPImage(data.url);
+          if (isProfile) {
+            setProfileImageVal(data.url);
+          } else {
+            setPImage(data.url);
+          }
         } else {
           setUploadError(data.message || 'Upload failed.');
         }
@@ -131,6 +135,7 @@ export default function AdminSection({
   const [whatsappVal, setWhatsappVal] = useState(settings.contactWhatsApp || '');
   const [telegramVal, setTelegramVal] = useState(settings.contactTelegram || '');
   const [phoneVal, setPhoneVal] = useState(settings.contactPhone || '');
+  const [profileImageVal, setProfileImageVal] = useState(settings.profileImage || '');
 
   useEffect(() => {
     // Sync local states when settings load
@@ -138,6 +143,7 @@ export default function AdminSection({
     setWhatsappVal(settings.contactWhatsApp);
     setTelegramVal(settings.contactTelegram);
     setPhoneVal(settings.contactPhone);
+    setProfileImageVal(settings.profileImage || '');
   }, [settings]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -311,7 +317,8 @@ export default function AdminSection({
       aboutText: aboutMeText,
       contactWhatsApp: whatsappVal,
       contactTelegram: telegramVal,
-      contactPhone: phoneVal
+      contactPhone: phoneVal,
+      profileImage: profileImageVal
     };
 
     try {
@@ -395,7 +402,7 @@ export default function AdminSection({
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="e.g. admin"
+                placeholder="artistayan123@gmail.com"
                 className="px-4 py-3 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none focus:border-gold-500 transition-colors"
               />
             </div>
@@ -407,7 +414,7 @@ export default function AdminSection({
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="password123"
+                placeholder="@Artistayan321"
                 className="px-4 py-3 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none focus:border-gold-500 transition-colors"
               />
             </div>
@@ -421,7 +428,7 @@ export default function AdminSection({
           </form>
 
           <div className="mt-8 border-t border-white/5 pt-6 text-center text-[10px] font-mono text-neutral-600">
-            <span>DEFAULT ACCREDITATION: admin / password123</span>
+            <span>DEFAULT ACCREDITATION: artistayan123@gmail.com / @Artistayan321</span>
           </div>
         </motion.div>
       </div>
@@ -927,6 +934,105 @@ export default function AdminSection({
                       rows={6} required value={aboutMeText} onChange={(e) => setAboutMeText(e.target.value)}
                       className="px-4 py-3 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none resize-none"
                     />
+                  </div>
+
+                  {/* Home Profile Image Section */}
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-neutral-500 uppercase font-bold text-[10px] tracking-wider">Home Profile Image (Change Front Page Image)</label>
+                    <div 
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={async (e) => {
+                        e.preventDefault();
+                        setIsDragging(false);
+                        const files = e.dataTransfer.files;
+                        if (files && files.length > 0) {
+                          await uploadFile(files[0], true);
+                        }
+                      }}
+                      className={`border-2 border-dashed rounded-2xl p-6 transition-all flex flex-col items-center justify-center gap-4 text-center relative overflow-hidden ${
+                        isDragging 
+                          ? 'border-gold-500 bg-gold-500/5 scale-[1.01]' 
+                          : profileImageVal 
+                            ? 'border-white/10 bg-neutral-900/50' 
+                            : 'border-white/15 bg-neutral-900 hover:border-white/30'
+                      }`}
+                    >
+                      {uploading ? (
+                        <div className="flex flex-col items-center gap-2 py-4">
+                          <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
+                          <span className="text-[10px] uppercase tracking-wider text-gold-400 font-mono">Uploading media assets...</span>
+                        </div>
+                      ) : profileImageVal ? (
+                        <div className="w-full flex flex-col sm:flex-row items-center gap-6 text-left">
+                          <div className="relative w-24 h-24 rounded-full overflow-hidden border border-white/10 flex-shrink-0">
+                            <img src={profileImageVal} className="w-full h-full object-cover" alt="Profile Preview" referrerPolicy="no-referrer" />
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                              <label className="cursor-pointer px-2 py-1 bg-black/80 border border-white/20 text-white rounded-lg text-[8px] hover:bg-gold-500 hover:text-black hover:border-transparent transition-all font-mono">
+                                Replace
+                                <input type="file" onChange={async (e) => {
+                                  const files = e.target.files;
+                                  if (files && files.length > 0) {
+                                    await uploadFile(files[0], true);
+                                  }
+                                }} accept="image/*" className="hidden" />
+                              </label>
+                            </div>
+                          </div>
+                          <div className="flex-1 flex flex-col gap-1 w-full min-w-0">
+                            <div className="flex items-center gap-1.5 text-green-500">
+                              <Check className="w-4 h-4" />
+                              <span className="text-[9px] uppercase font-bold tracking-wider font-mono">Image Loaded Successfully</span>
+                            </div>
+                            <p className="text-[10px] text-neutral-500 truncate font-mono max-w-full">{profileImageVal}</p>
+                            <div className="flex gap-2 mt-1">
+                              <label className="cursor-pointer px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-white font-bold rounded-lg text-[9px] transition-all flex items-center gap-1 border border-white/5 font-mono">
+                                <Upload className="w-3 h-3" /> Upload Different
+                                <input type="file" onChange={async (e) => {
+                                  const files = e.target.files;
+                                  if (files && files.length > 0) {
+                                    await uploadFile(files[0], true);
+                                  }
+                                }} accept="image/*" className="hidden" />
+                              </label>
+                              <button 
+                                type="button"
+                                onClick={() => setProfileImageVal('')}
+                                className="px-3 py-1.5 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white font-bold rounded-lg text-[9px] border border-red-500/20 hover:border-transparent transition-all font-mono"
+                              >
+                                Reset
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <label className="cursor-pointer w-full py-4 flex flex-col items-center justify-center gap-2">
+                          <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-neutral-400 bg-white/5 hover:border-gold-500/50 hover:text-gold-400 transition-all">
+                            <Upload className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <span className="text-xs text-white font-bold">Drag and drop profile photo here</span>
+                            <span className="text-neutral-500 text-[10px] block mt-0.5">or browse local disk to upload</span>
+                          </div>
+                          <span className="text-[8px] text-neutral-600 uppercase tracking-widest font-mono">Accepts PNG, JPG, WEBP, GIF (Max 10MB)</span>
+                          <input type="file" onChange={async (e) => {
+                            const files = e.target.files;
+                            if (files && files.length > 0) {
+                              await uploadFile(files[0], true);
+                            }
+                          }} accept="image/*" className="hidden" />
+                        </label>
+                      )}
+                    </div>
+                    {/* Manual image URL override field */}
+                    <div className="mt-1 flex items-center gap-2 w-full">
+                      <span className="text-[9px] text-neutral-500 uppercase flex-shrink-0 font-mono font-bold tracking-wider">Or Paste Profile Image URL:</span>
+                      <input 
+                        type="text" value={profileImageVal} onChange={(e) => setProfileImageVal(e.target.value)}
+                        placeholder="https://images.unsplash.com/..."
+                        className="w-full px-3 py-1.5 bg-neutral-900 border border-white/5 rounded-lg text-[10px] text-neutral-300 outline-none font-mono"
+                      />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
