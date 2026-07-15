@@ -143,7 +143,7 @@ export default function ReviewsSection({ reviews, onSubmitReview }: ReviewsSecti
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex items-center justify-center p-4"
+              className="fixed inset-0 z-50 bg-black/95 backdrop-blur-xl flex justify-center items-center p-4 overflow-y-auto"
             >
               <div className="absolute inset-0 grid-overlay opacity-30 pointer-events-none" />
 
@@ -151,7 +151,7 @@ export default function ReviewsSection({ reviews, onSubmitReview }: ReviewsSecti
                 initial={{ scale: 0.9, y: 35 }}
                 animate={{ scale: 1, y: 0 }}
                 exit={{ scale: 0.9, y: 35 }}
-                className="w-full max-w-lg bg-neutral-950 border border-white/10 rounded-3xl p-8 relative z-10"
+                className="my-auto w-full max-w-lg bg-neutral-950 border border-white/10 rounded-3xl p-6 sm:p-8 relative z-10"
               >
                 {/* Close Button */}
                 <button

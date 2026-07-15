@@ -45,6 +45,26 @@ export interface AdminSettings {
   contactTelegram: string;
   contactWhatsApp: string;
   profileImage?: string;
+  // ID Card & Resume customizations
+  cardName?: string;
+  cardDesignation?: string;
+  cardEmail?: string;
+  cardLocation?: string;
+  cardTwitter?: string;
+  cardGithub?: string;
+  cardInstagram?: string;
+  cardLinkedin?: string;
+  resumeAbout?: string;
+  resumeSkills?: string;
+  resumeExperience?: string;
+  resumeProjects?: string;
+  resumeEducation?: string;
+  resumeCertifications?: string;
+  resumeContact?: string;
+  resumePdfUrl?: string;
+  cardThemeColor?: string;
+  cardBgStyle?: string;
+  animationsEnabled?: boolean;
 }
 
 export interface AnalyticsData {

@@ -125,7 +125,7 @@ export default function HomeSection({ onNavigate, settings }: HomeSectionProps) 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.4 }}
-            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-12 w-full sm:w-auto"
+            className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-4 mb-12 w-full sm:w-auto"
           >
             <button 
               onClick={() => onNavigate('/portfolio')}
@@ -209,6 +209,12 @@ export default function HomeSection({ onNavigate, settings }: HomeSectionProps) 
             <div className="w-full h-full rounded-full overflow-hidden border border-white/5 relative z-10 shadow-[inset_0_0_40px_rgba(0,0,0,0.8)]">
               <motion.img 
                 src={displayImage} 
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  if (target.src !== ayanProfile) {
+                    target.src = ayanProfile;
+                  }
+                }}
                 alt="Ayan Nayak (A.ynx_)" 
                 initial={{ scale: 1.25, filter: 'brightness(0.3) blur(10px)', opacity: 0 }}
                 animate={{ scale: 1, filter: 'brightness(1) blur(0px)', opacity: 1 }}

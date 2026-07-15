@@ -68,6 +68,51 @@ export default function AdminSection({
     }
   };
 
+  const compressImage = (file: File): Promise<{ base64: string; type: string }> => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 1000; // Limit long edge to 1000px for robust size and performance
+          
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            // Compress to JPEG with 0.75 quality (highly optimized for size and crispness)
+            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.75);
+            resolve({ base64: compressedBase64, type: 'image/jpeg' });
+          } else {
+            resolve({ base64: event.target?.result as string, type: file.type });
+          }
+        };
+        img.onerror = () => {
+          resolve({ base64: event.target?.result as string, type: file.type });
+        };
+      };
+      reader.onerror = () => {
+        resolve({ base64: '', type: file.type });
+      };
+    });
+  };
+
   const uploadFile = async (file: File, isProfile: boolean = false) => {
     if (!file.type.startsWith('image/')) {
       setUploadError('Please select an image file (PNG, JPG, WEBP, GIF etc.)');
@@ -78,37 +123,38 @@ export default function AdminSection({
     setUploadError('');
 
     try {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64String = reader.result as string;
-        
-        const token = sessionStorage.getItem('ayn_session');
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            name: file.name,
-            type: file.type,
-            base64: base64String
-          })
-        });
-
-        const data = await response.json();
-        if (data.success) {
-          if (isProfile) {
-            setProfileImageVal(data.url);
-          } else {
-            setPImage(data.url);
-          }
-        } else {
-          setUploadError(data.message || 'Upload failed.');
-        }
+      const { base64: base64String, type: compressedType } = await compressImage(file);
+      if (!base64String) {
+        setUploadError('Failed to process image file.');
         setUploading(false);
-      };
-      reader.readAsDataURL(file);
+        return;
+      }
+      
+      const token = sessionStorage.getItem('ayn_session');
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: file.name.endsWith('.jpg') || file.name.endsWith('.jpeg') ? file.name : `${file.name}.jpg`,
+          type: compressedType,
+          base64: base64String
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        if (isProfile) {
+          setProfileImageVal(data.url);
+        } else {
+          setPImage(data.url);
+        }
+      } else {
+        setUploadError(data.message || 'Upload failed.');
+      }
+      setUploading(false);
     } catch (err: any) {
       setUploadError('An error occurred during upload.');
       setUploading(false);
@@ -137,13 +183,59 @@ export default function AdminSection({
   const [phoneVal, setPhoneVal] = useState(settings.contactPhone || '');
   const [profileImageVal, setProfileImageVal] = useState(settings.profileImage || '');
 
+  // ID Card & Resume States
+  const [cardNameVal, setCardNameVal] = useState(settings.cardName || 'Ayan Nayak');
+  const [cardDesignationVal, setCardDesignationVal] = useState(settings.cardDesignation || 'Creative Developer');
+  const [cardLocationVal, setCardLocationVal] = useState(settings.cardLocation || 'Bhubaneswar, India');
+  const [cardEmailVal, setCardEmailVal] = useState(settings.cardEmail || 'artistayan123@gmail.com');
+  
+  const [cardTwitterVal, setCardTwitterVal] = useState(settings.cardTwitter || 'https://twitter.com');
+  const [cardGithubVal, setCardGithubVal] = useState(settings.cardGithub || 'https://github.com');
+  const [cardInstagramVal, setCardInstagramVal] = useState(settings.cardInstagram || 'https://instagram.com');
+  const [cardLinkedinVal, setCardLinkedinVal] = useState(settings.cardLinkedin || 'https://linkedin.com');
+
+  const [resumeAboutVal, setResumeAboutVal] = useState(settings.resumeAbout || '');
+  const [resumeSkillsVal, setResumeSkillsVal] = useState(settings.resumeSkills || '');
+  const [resumeExperienceVal, setResumeExperienceVal] = useState(settings.resumeExperience || '');
+  const [resumeProjectsVal, setResumeProjectsVal] = useState(settings.resumeProjects || '');
+  const [resumeEducationVal, setResumeEducationVal] = useState(settings.resumeEducation || '');
+  const [resumeCertificationsVal, setResumeCertificationsVal] = useState(settings.resumeCertifications || '');
+  const [resumeContactVal, setResumeContactVal] = useState(settings.resumeContact || '');
+  const [resumePdfUrlVal, setResumePdfUrlVal] = useState(settings.resumePdfUrl || '');
+
+  const [cardThemeColorVal, setCardThemeColorVal] = useState(settings.cardThemeColor || '#d4af37');
+  const [cardBgStyleVal, setCardBgStyleVal] = useState(settings.cardBgStyle || 'glass');
+  const [animationsEnabledVal, setAnimationsEnabledVal] = useState(settings.animationsEnabled !== false);
+
   useEffect(() => {
     // Sync local states when settings load
-    setAboutMeText(settings.aboutText);
-    setWhatsappVal(settings.contactWhatsApp);
-    setTelegramVal(settings.contactTelegram);
-    setPhoneVal(settings.contactPhone);
+    setAboutMeText(settings.aboutText || '');
+    setWhatsappVal(settings.contactWhatsApp || '');
+    setTelegramVal(settings.contactTelegram || '');
+    setPhoneVal(settings.contactPhone || '');
     setProfileImageVal(settings.profileImage || '');
+
+    setCardNameVal(settings.cardName || 'Ayan Nayak');
+    setCardDesignationVal(settings.cardDesignation || 'Creative Developer');
+    setCardLocationVal(settings.cardLocation || 'Bhubaneswar, India');
+    setCardEmailVal(settings.cardEmail || 'artistayan123@gmail.com');
+    setCardTwitterVal(settings.cardTwitter || 'https://twitter.com');
+    setCardGithubVal(settings.cardGithub || 'https://github.com');
+    setCardInstagramVal(settings.cardInstagram || 'https://instagram.com');
+    setCardLinkedinVal(settings.cardLinkedin || 'https://linkedin.com');
+
+    setResumeAboutVal(settings.resumeAbout || '');
+    setResumeSkillsVal(settings.resumeSkills || '');
+    setResumeExperienceVal(settings.resumeExperience || '');
+    setResumeProjectsVal(settings.resumeProjects || '');
+    setResumeEducationVal(settings.resumeEducation || '');
+    setResumeCertificationsVal(settings.resumeCertifications || '');
+    setResumeContactVal(settings.resumeContact || '');
+    setResumePdfUrlVal(settings.resumePdfUrl || '');
+
+    setCardThemeColorVal(settings.cardThemeColor || '#d4af37');
+    setCardBgStyleVal(settings.cardBgStyle || 'glass');
+    setAnimationsEnabledVal(settings.animationsEnabled !== false);
   }, [settings]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -318,7 +410,27 @@ export default function AdminSection({
       contactWhatsApp: whatsappVal,
       contactTelegram: telegramVal,
       contactPhone: phoneVal,
-      profileImage: profileImageVal
+      profileImage: profileImageVal,
+      // Extended fields
+      cardName: cardNameVal,
+      cardDesignation: cardDesignationVal,
+      cardLocation: cardLocationVal,
+      cardEmail: cardEmailVal,
+      cardTwitter: cardTwitterVal,
+      cardGithub: cardGithubVal,
+      cardInstagram: cardInstagramVal,
+      cardLinkedin: cardLinkedinVal,
+      resumeAbout: resumeAboutVal,
+      resumeSkills: resumeSkillsVal,
+      resumeExperience: resumeExperienceVal,
+      resumeProjects: resumeProjectsVal,
+      resumeEducation: resumeEducationVal,
+      resumeCertifications: resumeCertificationsVal,
+      resumeContact: resumeContactVal,
+      resumePdfUrl: resumePdfUrlVal,
+      cardThemeColor: cardThemeColorVal,
+      cardBgStyle: cardBgStyleVal,
+      animationsEnabled: animationsEnabledVal
     };
 
     try {
@@ -1056,6 +1168,217 @@ export default function AdminSection({
                         type="text" required value={phoneVal} onChange={(e) => setPhoneVal(e.target.value)}
                         className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none"
                       />
+                    </div>
+                  </div>
+
+                  {/* --- SECTION: ID CARD SETTINGS --- */}
+                  <div className="border-t border-white/5 pt-6 mt-4">
+                    <h3 className="text-sm font-mono font-bold text-gold-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gold-400" /> ID Card Parameters
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Badge Holder Name</label>
+                        <input 
+                          type="text" value={cardNameVal} onChange={(e) => setCardNameVal(e.target.value)}
+                          placeholder="Ayan Nayak"
+                          className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Badge Professional Title</label>
+                        <input 
+                          type="text" value={cardDesignationVal} onChange={(e) => setCardDesignationVal(e.target.value)}
+                          placeholder="Creative Developer"
+                          className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Badge Location</label>
+                        <input 
+                          type="text" value={cardLocationVal} onChange={(e) => setCardLocationVal(e.target.value)}
+                          placeholder="Bhubaneswar, India"
+                          className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Badge Email Address</label>
+                        <input 
+                          type="email" value={cardEmailVal} onChange={(e) => setCardEmailVal(e.target.value)}
+                          placeholder="artistayan123@gmail.com"
+                          className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* --- SECTION: ID CARD SOCIAL CONNECTIONS --- */}
+                  <div className="border-t border-white/5 pt-6">
+                    <h3 className="text-sm font-mono font-bold text-gold-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gold-400" /> ID Card Social Connections
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">GitHub Link</label>
+                        <input 
+                          type="text" value={cardGithubVal} onChange={(e) => setCardGithubVal(e.target.value)}
+                          placeholder="https://github.com/..."
+                          className="px-3 py-2 bg-neutral-900 border border-white/10 rounded-xl text-white text-xs outline-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">LinkedIn Link</label>
+                        <input 
+                          type="text" value={cardLinkedinVal} onChange={(e) => setCardLinkedinVal(e.target.value)}
+                          placeholder="https://linkedin.com/in/..."
+                          className="px-3 py-2 bg-neutral-900 border border-white/10 rounded-xl text-white text-xs outline-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Twitter/X Link</label>
+                        <input 
+                          type="text" value={cardTwitterVal} onChange={(e) => setCardTwitterVal(e.target.value)}
+                          placeholder="https://twitter.com/..."
+                          className="px-3 py-2 bg-neutral-900 border border-white/10 rounded-xl text-white text-xs outline-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Instagram Link</label>
+                        <input 
+                          type="text" value={cardInstagramVal} onChange={(e) => setCardInstagramVal(e.target.value)}
+                          placeholder="https://instagram.com/..."
+                          className="px-3 py-2 bg-neutral-900 border border-white/10 rounded-xl text-white text-xs outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* --- SECTION: ACTIVE RESUME VIEW BLUEPRINT --- */}
+                  <div className="border-t border-white/5 pt-6">
+                    <h3 className="text-sm font-mono font-bold text-gold-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gold-400" /> Active Resume View Blueprint
+                    </h3>
+                    <p className="text-[10px] text-neutral-500 font-mono mb-4">
+                      Customize the content of the Apple-style expanded resume viewer. You can use standard HTML tags for layout structures.
+                    </p>
+                    <div className="flex flex-col gap-4">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Resume Summary/About</label>
+                        <textarea 
+                          rows={3} value={resumeAboutVal} onChange={(e) => setResumeAboutVal(e.target.value)}
+                          placeholder="About summary text..."
+                          className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none font-sans text-xs"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Skills & Disciplines (Comma-Separated)</label>
+                        <textarea 
+                          rows={2} value={resumeSkillsVal} onChange={(e) => setResumeSkillsVal(e.target.value)}
+                          placeholder="React, Node.js, Express, After Effects, Photoshop, ..."
+                          className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none font-mono text-xs"
+                        />
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Experience Section (HTML Supported)</label>
+                          <textarea 
+                            rows={6} value={resumeExperienceVal} onChange={(e) => setResumeExperienceVal(e.target.value)}
+                            placeholder="HTML experience list..."
+                            className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none font-mono text-xs"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Projects Section (HTML Supported)</label>
+                          <textarea 
+                            rows={6} value={resumeProjectsVal} onChange={(e) => setResumeProjectsVal(e.target.value)}
+                            placeholder="HTML projects grid..."
+                            className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none font-mono text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Education Section (HTML Supported)</label>
+                          <textarea 
+                            rows={4} value={resumeEducationVal} onChange={(e) => setResumeEducationVal(e.target.value)}
+                            placeholder="HTML academic blocks..."
+                            className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none font-mono text-xs"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Certifications & Honors (HTML Supported)</label>
+                          <textarea 
+                            rows={4} value={resumeCertificationsVal} onChange={(e) => setResumeCertificationsVal(e.target.value)}
+                            placeholder="HTML cert blocks..."
+                            className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none font-mono text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Downloadable PDF Resume Link / URL</label>
+                          <input 
+                            type="text" value={resumePdfUrlVal} onChange={(e) => setResumePdfUrlVal(e.target.value)}
+                            placeholder="https://drive.google.com/file/d/... or /uploads/resume.pdf"
+                            className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white text-xs outline-none font-mono"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Resume Contact Info (HTML Supported)</label>
+                          <input 
+                            type="text" value={resumeContactVal} onChange={(e) => setResumeContactVal(e.target.value)}
+                            placeholder="HTML contacts row..."
+                            className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white text-xs outline-none font-mono"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* --- SECTION: THEME, DECORATIVE & PHYSICS CONTROLS --- */}
+                  <div className="border-t border-white/5 pt-6">
+                    <h3 className="text-sm font-mono font-bold text-gold-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gold-400" /> Theme & Physics Control
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Card Design Presets</label>
+                        <select 
+                          value={cardBgStyleVal} onChange={(e) => setCardBgStyleVal(e.target.value)}
+                          className="px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none text-xs"
+                        >
+                          <option value="glass">💎 Premium Glassmorphism</option>
+                          <option value="dark">🖤 Sleek Obsidian Dark</option>
+                          <option value="neon">⚡ Cyber Glow Neon</option>
+                          <option value="cyberpunk">☣️ Industrial Cyberpunk Yellow</option>
+                        </select>
+                      </div>
+                      <div className="flex flex-col gap-1.5">
+                        <label className="text-neutral-500 uppercase text-[10px] font-mono tracking-wider">Card Highlight Color Accent (Hex)</label>
+                        <div className="flex gap-2">
+                          <input 
+                            type="color" value={cardThemeColorVal} onChange={(e) => setCardThemeColorVal(e.target.value)}
+                            className="w-10 h-10 rounded bg-neutral-900 border border-white/10 outline-none cursor-pointer animate-none"
+                          />
+                          <input 
+                            type="text" value={cardThemeColorVal} onChange={(e) => setCardThemeColorVal(e.target.value)}
+                            placeholder="#d4af37"
+                            className="w-full px-4 py-2.5 bg-neutral-900 border border-white/10 rounded-xl text-white outline-none text-xs font-mono"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1.5 justify-center">
+                        <label className="cursor-pointer flex items-center gap-3 select-none">
+                          <input 
+                            type="checkbox" checked={animationsEnabledVal} onChange={(e) => setAnimationsEnabledVal(e.target.checked)}
+                            className="w-5 h-5 rounded bg-neutral-900 border border-white/10 text-gold-500 focus:ring-0 outline-none"
+                          />
+                          <div>
+                            <span className="text-white text-xs font-bold font-mono uppercase tracking-wide">Enable Physics Animations</span>
+                            <span className="text-[10px] text-neutral-500 block">Simulates real swinging and tilt physics</span>
+                          </div>
+                        </label>
+                      </div>
                     </div>
                   </div>
 

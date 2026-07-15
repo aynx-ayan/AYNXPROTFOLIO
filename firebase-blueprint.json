@@ -87,6 +87,16 @@
         "recentVisits": { "type": "array", "description": "List of recent visitor session snapshots" }
       },
       "required": ["totalViews", "viewsByCountry", "viewsByService", "recentVisits"]
+    },
+    "UploadedMedia": {
+      "title": "UploadedMedia",
+      "description": "Uploaded asset files stored as base64 data for visual caching and media recovery",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "description": "The mime type of the file" },
+        "base64": { "type": "string", "description": "The full base64 data string" }
+      },
+      "required": ["type", "base64"]
     }
   },
   "firestore": {
@@ -113,6 +123,10 @@
     "site_config/analytics": {
       "schema": "Analytics",
       "description": "Statistical visitor metrics"
+    },
+    "uploaded_media/{mediaId}": {
+      "schema": "UploadedMedia",
+      "description": "Uploaded asset backups stored in Firestore"
     }
   }
 }

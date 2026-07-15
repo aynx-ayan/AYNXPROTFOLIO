@@ -43,5 +43,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    // UPLOADED MEDIA RULES
+    match /uploaded_media/{mediaId} {
+      allow read: if true;
+      allow write: if true;
+    }
   }
 }

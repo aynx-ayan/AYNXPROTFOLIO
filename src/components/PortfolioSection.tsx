@@ -12,6 +12,18 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
+  // Lock body scroll when project details modal is active to keep it fixed in place
+  useEffect(() => {
+    if (activeProject) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [activeProject]);
+
   const categories = [
     'All',
     'Website Development',
@@ -85,6 +97,13 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
                 <div className="absolute inset-0 z-0">
                   <img 
                     src={project.image} 
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      const fallback = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop";
+                      if (target.src !== fallback) {
+                        target.src = fallback;
+                      }
+                    }}
                     alt={project.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 pointer-events-none"
                     referrerPolicy="no-referrer"
@@ -94,7 +113,7 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
                 </div>
 
                 {/* Information Overlay */}
-                <div className="p-6 relative z-10 w-full flex flex-col gap-2 translate-y-3 group-hover:translate-y-0 transition-transform duration-500">
+                <div className="p-6 relative z-10 w-full flex flex-col gap-2 md:translate-y-3 md:group-hover:translate-y-0 translate-y-0 transition-transform duration-500">
                   <span className="text-[9px] font-mono tracking-widest text-gold-400 uppercase">
                     {project.category}
                   </span>
@@ -103,11 +122,11 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
                     {project.title}
                   </h3>
 
-                  <p className="text-[10px] font-sans text-neutral-400 line-clamp-2 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                  <p className="text-[10px] font-sans text-neutral-400 line-clamp-2 leading-relaxed md:opacity-0 md:group-hover:opacity-100 opacity-100 transition-opacity duration-500">
                     {project.description}
                   </p>
 
-                  <div className="flex gap-2 flex-wrap pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                  <div className="flex gap-2 flex-wrap pt-2 md:opacity-0 md:group-hover:opacity-100 opacity-100 transition-opacity duration-500 delay-100">
                     {project.tags.slice(0, 3).map(tag => (
                       <span key={tag} className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[8px] font-mono text-neutral-400">
                         {tag}
@@ -131,7 +150,7 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 md:p-8 select-none"
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex justify-center items-center p-3 sm:p-6 md:p-8 select-none overflow-y-auto"
             >
               {/* Custom micro grids overlay */}
               <div className="absolute inset-0 grid-overlay opacity-30 pointer-events-none" />
@@ -141,13 +160,20 @@ export default function PortfolioSection({ projects, onNavigateContact }: Portfo
                 animate={{ scale: 1, y: 0, opacity: 1 }}
                 exit={{ scale: 0.9, y: 50, opacity: 0 }}
                 transition={{ type: "spring", damping: 25, stiffness: 120 }}
-                className="w-full max-w-5xl bg-neutral-950 border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden relative z-10 flex flex-col lg:flex-row max-h-[92vh] lg:max-h-[85vh]"
+                className="my-auto w-full max-w-5xl bg-neutral-950 border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden relative z-10 flex flex-col lg:flex-row max-h-[92vh] sm:max-h-[85vh]"
               >
                 
                 {/* Left Side: Dynamic Cinematic Frame */}
                 <div className="w-full lg:w-1/2 relative bg-black aspect-video sm:aspect-[21/9] lg:aspect-auto lg:h-auto lg:min-h-[500px] flex-shrink-0">
                   <img 
                     src={activeProject.image} 
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      const fallback = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop";
+                      if (target.src !== fallback) {
+                        target.src = fallback;
+                      }
+                    }}
                     alt={activeProject.title} 
                     className="w-full h-full object-cover absolute inset-0 pointer-events-none"
                     referrerPolicy="no-referrer"
