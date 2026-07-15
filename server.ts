@@ -131,34 +131,22 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
 }
 
 async function saveUploadedMedia(fileName: string, type: string, base64: string) {
-  const pathForWrite = `uploaded_media/${fileName}`;
   try {
-    const docRef = doc(firestoreDb, 'uploaded_media', fileName);
-    await setDoc(docRef, { type, base64 });
+    await setDoc(doc(firestoreDb, 'uploaded_media', fileName), { type, base64 });
     console.log(`[FIRESTORE MEDIA BACKUP] Saved ${fileName} to Firestore`);
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.WRITE, pathForWrite);
-    } else {
-      console.error(`[FIRESTORE MEDIA BACKUP] Failed to save ${fileName}:`, err);
-    }
+    console.error(`[FIRESTORE MEDIA BACKUP] Failed to save ${fileName}:`, err);
   }
 }
 
 async function getUploadedMedia(fileName: string) {
-  const pathForGet = `uploaded_media/${fileName}`;
   try {
-    const docRef = doc(firestoreDb, 'uploaded_media', fileName);
-    const snap = await getDoc(docRef);
+    const snap = await getDoc(doc(firestoreDb, 'uploaded_media', fileName));
     if (snap.exists()) {
       return snap.data() as { type: string; base64: string };
     }
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.GET, pathForGet);
-    } else {
-      console.error(`[FIRESTORE MEDIA BACKUP] Failed to get ${fileName}:`, err);
-    }
+    console.error(`[FIRESTORE MEDIA BACKUP] Failed to get ${fileName}:`, err);
   }
   return null;
 }
@@ -415,60 +403,40 @@ async function ensureDatabaseSeeded() {
 
 // Database Getters and Setters
 async function getAdminCredentials() {
-  const path = 'site_config/admin';
   try {
-    const docRef = doc(firestoreDb, 'site_config', 'admin');
-    const snap = await getDoc(docRef);
+    const snap = await getDoc(doc(firestoreDb, 'site_config', 'admin'));
     if (snap.exists()) {
       return snap.data();
     }
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.GET, path);
-    } else {
-      console.error('Error getting admin credentials', err);
-    }
+    console.error('Error getting admin credentials', err);
   }
   return DEFAULT_DB.admin;
 }
 
 async function getSettings() {
-  const path = 'site_config/settings';
   try {
-    const docRef = doc(firestoreDb, 'site_config', 'settings');
-    const snap = await getDoc(docRef);
+    const snap = await getDoc(doc(firestoreDb, 'site_config', 'settings'));
     if (snap.exists()) {
       return snap.data();
     }
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.GET, path);
-    } else {
-      console.error('Error getting settings', err);
-    }
+    console.error('Error getting settings', err);
   }
   return DEFAULT_DB.settings;
 }
 
 async function updateSettings(settings: any) {
-  const path = 'site_config/settings';
   try {
-    const docRef = doc(firestoreDb, 'site_config', 'settings');
-    await setDoc(docRef, settings, { merge: true });
+    await setDoc(doc(firestoreDb, 'site_config', 'settings'), settings, { merge: true });
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.WRITE, path);
-    } else {
-      console.error('Error updating settings', err);
-    }
+    console.error('Error updating settings', err);
   }
 }
 
 async function getProjects() {
-  const path = 'projects';
   try {
-    const colRef = collection(firestoreDb, 'projects');
-    const snap = await getDocs(colRef);
+    const snap = await getDocs(collection(firestoreDb, 'projects'));
     const projects: any[] = [];
     snap.forEach((doc) => {
       projects.push(doc.data());
@@ -483,48 +451,30 @@ async function getProjects() {
     });
     return projects;
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.LIST, path);
-    } else {
-      console.error('Error getting projects', err);
-    }
+    console.error('Error getting projects', err);
   }
   return DEFAULT_DB.projects;
 }
 
 async function saveProject(project: any) {
-  const path = `projects/${project.id}`;
   try {
-    const docRef = doc(firestoreDb, 'projects', project.id);
-    await setDoc(docRef, project);
+    await setDoc(doc(firestoreDb, 'projects', project.id), project);
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.WRITE, path);
-    } else {
-      console.error('Error saving project', err);
-    }
+    console.error('Error saving project', err);
   }
 }
 
 async function deleteProject(id: string) {
-  const path = `projects/${id}`;
   try {
-    const docRef = doc(firestoreDb, 'projects', id);
-    await deleteDoc(docRef);
+    await deleteDoc(doc(firestoreDb, 'projects', id));
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.DELETE, path);
-    } else {
-      console.error('Error deleting project', err);
-    }
+    console.error('Error deleting project', err);
   }
 }
 
 async function getReviews() {
-  const path = 'reviews';
   try {
-    const colRef = collection(firestoreDb, 'reviews');
-    const snap = await getDocs(colRef);
+    const snap = await getDocs(collection(firestoreDb, 'reviews'));
     const reviews: any[] = [];
     snap.forEach((doc) => {
       reviews.push(doc.data());
@@ -534,48 +484,30 @@ async function getReviews() {
     });
     return reviews;
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.LIST, path);
-    } else {
-      console.error('Error getting reviews', err);
-    }
+    console.error('Error getting reviews', err);
   }
   return DEFAULT_DB.reviews;
 }
 
 async function saveReview(review: any) {
-  const path = `reviews/${review.id}`;
   try {
-    const docRef = doc(firestoreDb, 'reviews', review.id);
-    await setDoc(docRef, review);
+    await setDoc(doc(firestoreDb, 'reviews', review.id), review);
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.WRITE, path);
-    } else {
-      console.error('Error saving review', err);
-    }
+    console.error('Error saving review', err);
   }
 }
 
 async function deleteReview(id: string) {
-  const path = `reviews/${id}`;
   try {
-    const docRef = doc(firestoreDb, 'reviews', id);
-    await deleteDoc(docRef);
+    await deleteDoc(doc(firestoreDb, 'reviews', id));
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.DELETE, path);
-    } else {
-      console.error('Error deleting review', err);
-    }
+    console.error('Error deleting review', err);
   }
 }
 
 async function getMessages() {
-  const path = 'messages';
   try {
-    const colRef = collection(firestoreDb, 'messages');
-    const snap = await getDocs(colRef);
+    const snap = await getDocs(collection(firestoreDb, 'messages'));
     const messages: any[] = [];
     snap.forEach((doc) => {
       messages.push(doc.data());
@@ -585,57 +517,35 @@ async function getMessages() {
     });
     return messages;
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.LIST, path);
-    } else {
-      console.error('Error getting messages', err);
-    }
+    console.error('Error getting messages', err);
   }
   return [];
 }
 
 async function saveMessage(message: any) {
-  const path = `messages/${message.id}`;
   try {
-    const docRef = doc(firestoreDb, 'messages', message.id);
-    await setDoc(docRef, message);
+    await setDoc(doc(firestoreDb, 'messages', message.id), message);
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.WRITE, path);
-    } else {
-      console.error('Error saving message', err);
-    }
+    console.error('Error saving message', err);
   }
 }
 
 async function deleteMessage(id: string) {
-  const path = `messages/${id}`;
   try {
-    const docRef = doc(firestoreDb, 'messages', id);
-    await deleteDoc(docRef);
+    await deleteDoc(doc(firestoreDb, 'messages', id));
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.DELETE, path);
-    } else {
-      console.error('Error deleting message', err);
-    }
+    console.error('Error deleting message', err);
   }
 }
 
 async function getAnalytics() {
-  const path = 'site_config/analytics';
   try {
-    const docRef = doc(firestoreDb, 'site_config', 'analytics');
-    const snap = await getDoc(docRef);
+    const snap = await getDoc(doc(firestoreDb, 'site_config', 'analytics'));
     if (snap.exists()) {
       return snap.data();
     }
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.GET, path);
-    } else {
-      console.error('Error getting analytics', err);
-    }
+    console.error('Error getting analytics', err);
   }
   return {
     totalViews: 0,
@@ -646,16 +556,10 @@ async function getAnalytics() {
 }
 
 async function updateAnalytics(analytics: any) {
-  const path = 'site_config/analytics';
   try {
-    const docRef = doc(firestoreDb, 'site_config', 'analytics');
-    await setDoc(docRef, analytics);
+    await setDoc(doc(firestoreDb, 'site_config', 'analytics'), analytics);
   } catch (err: any) {
-    if (err && (err.code === 'permission-denied' || String(err).includes('permissions'))) {
-      handleFirestoreError(err, OperationType.WRITE, path);
-    } else {
-      console.error('Error updating analytics', err);
-    }
+    console.error('Error updating analytics', err);
   }
 }
 
